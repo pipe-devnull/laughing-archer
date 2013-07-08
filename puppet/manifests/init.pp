@@ -48,17 +48,9 @@ file { "vagrant-nginx":
 
 exec { "start-fastcgi-mono-server4":
 	logoutput => "on_failure",
+    group => 'www-data',
+    user => 'www-data',
 	command => "/usr/bin/fastcgi-mono-server4 /applications=/:/var/www /filename=/tmp/SOCK-ServiceStack /socket=unix &",
 	require => File["vagrant-nginx"],
-}
-
-exec { "www-data-group-permissions":
-	command => "/usr/bin/sudo /bin/chgrp www-data /tmp/SOCK-ServiceStack",
-	require => Exec["start-fastcgi-mono-server4"],
-}
-
-exec { "read-write":
-	command => "/usr/bin/sudo /bin/chmod g+rw /tmp/SOCK-ServiceStack",
-	require => Exec["www-data-group-permissions"],
 }
 
